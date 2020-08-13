@@ -26,9 +26,5 @@
     "mocha": "^8.1.1",
     "nodemon": "^2.0.4",
     "supertest": "^4.0.2"
-  },
-  "globals": {
-    "supertest": true,
-    "expect": true
   }
 }
