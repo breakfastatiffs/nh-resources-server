@@ -5,7 +5,7 @@ CREATE TABLE users (
     password TEXT NOT NULL,
     nickname TEXT,
     title_id INTEGER
-        REFERENCES resource(id) ON DELETE CASCADE NOT NULL,
+        REFERENCES resource(id) ON DELETE CASCADE,
     date_created TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
