@@ -2,7 +2,6 @@ const path = require('path');
 const express = require('express');
 const xss = require('xss');
 const ResourceService = require('./resource-service');
-const { json } = require('express');
 
 const resourceRouter = express.Router();
 const jsonParser = express.json();
@@ -95,6 +94,7 @@ resourceRouter
       })
       .catch(next);
   })
+  // create validator to include resources without user_id
   .patch(jsonParser, (req, res, next) => {
     const { resource_id, user_id, category, title, phone, street, city, state, zip_code, county, url, facebook, twitter, instagram } = req.body;
     const resourceToUpdate = { resource_id, user_id, category, title, phone, street, city, state, zip_code, county, url, facebook, twitter, instagram};
