@@ -10,9 +10,19 @@ CREATE TYPE resource_category as ENUM (
     'Veterans'
 );
 
-CREATE TABLE categories (
+CREATE TABLE resource (
     id SERIAL PRIMARY KEY,
-    title_id INTEGER
-        REFERENCES sources_info(id) ON DELETE CASCADE NOT NULL,
     resource_category TEXT NOT NULL,
+    title TEXT NOT NULL,
+    phone_number CHAR(10) NOT NULL,
+    street_address TEXT,
+    city TEXT,
+    state TEXT NOT NULL,
+    zip_code INTEGER,
+    county TEXT NOT NULL,
+    url TEXT,
+    facebook TEXT,
+    twitter TEXT,
+    instagram TEXT,
+    date_created TIMESTAMPTZ DEFAULT now() NOT NULL
 );

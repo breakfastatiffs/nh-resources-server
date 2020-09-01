@@ -1,1 +1,0 @@
-DROP TABLE IF EXISTS sources_info CASCADE;
