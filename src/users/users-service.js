@@ -1,4 +1,4 @@
-const UserService = {
+const UsersService = {
   getAllUsers(db) {
     return db.select('*').from('users');
   },
@@ -30,4 +30,4 @@ const UserService = {
   },
 };
   
-module.exports = UserService;
+module.exports = UsersService;

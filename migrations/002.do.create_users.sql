@@ -5,12 +5,12 @@ CREATE TABLE users (
     password TEXT NOT NULL,
     nickname TEXT,
     title_id INTEGER
-        REFERENCES resource(id) ON DELETE CASCADE,
+        REFERENCES resources(id) ON DELETE CASCADE,
     date_created TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 
-ALTER TABLE resource 
+ALTER TABLE resources 
   ADD COLUMN
     user_id INTEGER REFERENCES users(id)
     ON DELETE SET NULL;
