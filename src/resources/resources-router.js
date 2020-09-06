@@ -8,9 +8,9 @@ const jsonParser = express.json();
 
 const serializeResources = resources => ({
   resource_id: resources.id,
-  category: resources.resource_category,
+  category: resources.category,
   title: xss(resources.title),
-  phone: xss(resources.phone_number),
+  phone_number: xss(resources.phone_number),
   street: xss(resources.street_address),
   city: xss(resources.city),
   state: xss(resources.state),
@@ -35,12 +35,44 @@ resourcesRouter
       .catch(next);
   })
   .post(jsonParser, (req, res, next) => {
+    const knexInstance = req.app.get('db');
     //   Do I need to include everything in this, or JUST required inputs? t h i n k
     // include all, but create validator to include empty social media ('non-required fields')
-    const { category, title, phone, street, city, state, zip_code, county, url, facebook, twitter, instagram, date_created } = req.body;
-    const newResources = { category, title, phone, street, city, state, zip_code, county, url, facebook, twitter, instagram };
+    const {  
+      resource_id,
+      category, 
+      title, 
+      phone_number, 
+      street_address, 
+      city, 
+      state, 
+      zip_code, 
+      county, 
+      url, 
+      facebook, 
+      twitter, 
+      instagram,
+      date_created 
+    } = req.body;
 
-    for (const [key, value] of Object.entries(newResources))
+    const newResource = { 
+      resource_id, 
+      category, 
+      title, 
+      phone_number,
+      street_address, 
+      city, 
+      state, 
+      zip_code,
+      county, 
+      url, 
+      facebook, 
+      twitter, 
+      instagram,
+      date_created
+    };
+
+    for (const [key, value] of Object.entries(newResource))
       if (value === null)
         return res.status(400).json({
           error: { message: `Missing '${key}' in request body` }
@@ -48,11 +80,12 @@ resourcesRouter
 
     // create more validators: checking url, case sensitive, proper # length, 1/10 counties,
 
-    newResources.date_created = date_created;
+    newResource.resource_id = resource_id;
+    newResource.date_created = date_created;
 
-    ResourcesService.insertResources(
+    ResourcesService.createResource(
       req.app.get('db'),
-      newResources
+      newResource
     )
       .then(resources => {
         res
@@ -85,7 +118,7 @@ resourcesRouter
     res.json(serializeResources(res.resources));
   })
   .delete((req, res, next) => {
-    ResourcesService.deleteResources(
+    ResourcesService.deleteById(
       req.app.get('db'),
       req.params.resource_id
     )
@@ -96,15 +129,15 @@ resourcesRouter
   })
   // create validator to include resources without user_id
   .patch(jsonParser, (req, res, next) => {
-    const { resource_id, user_id, category, title, phone, street, city, state, zip_code, county, url, facebook, twitter, instagram } = req.body;
-    const resourcesToUpdate = { resource_id, user_id, category, title, phone, street, city, state, zip_code, county, url, facebook, twitter, instagram};
+    const { resource_id, user_id, category, title, phone_number, street, city, state, zip_code, county, url, facebook, twitter, instagram } = req.body;
+    const resourcesToUpdate = { resource_id, user_id, category, title, phone_number, street, city, state, zip_code, county, url, facebook, twitter, instagram};
 
     for (const [key, value] of Object.entries(resourcesToUpdate))
       if (value === null)
         return res.status(400).json({
           error: { message: `Missing '${key}' in request body` }
         });
-    ResourcesService.updateResources(
+    ResourcesService.updateById(
       req.app.get('db'),
       req.params.resource_id,
       resourcesToUpdate

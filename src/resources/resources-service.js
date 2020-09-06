@@ -1,13 +1,28 @@
+// const resourcesRouter = require("./resources-router");
+
 const ResourcesService = {
   getAllResources(db) {
     return db.select('*').from('resources');
   },
 
-  insertResources(db, newResources) {
+  createResource(db, resources) {
     return db
-      .insert(newResources)
+      .insert({
+        title: resources.title,
+        category: resources.category,
+        phone_number: resources.phone_number,
+        street_address: resources.street,
+        city: resources.city,
+        county: resources.county,
+        state: resources.state,
+        zip_code: resources.zip_code,
+        url: resources.url,
+        facebook: resources.facebook,
+        twitter: resources.twitter,
+        instagram: resources.instagram
+      })
       .into('resources')
-      .return('*')
+      .returning('*')
       .then(row => {
         return row[0];
       });
@@ -17,16 +32,16 @@ const ResourcesService = {
     return db.from('resources').select('*').where('id',id).first();
   },
 
-  deleteResources(db,id){
+  deleteById(db,id){
     return db('resources')
       .where({id})
       .delete();
   },
 
-  updateResources(db, id, newResources){
+  updateById(db, id, newResource){
     return db('resources')
       .where({id})
-      .update(newResources);
+      .update(newResource);
   },
 };
   
