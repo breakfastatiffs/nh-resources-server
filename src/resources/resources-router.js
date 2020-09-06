@@ -129,8 +129,38 @@ resourcesRouter
   })
   // create validator to include resources without user_id
   .patch(jsonParser, (req, res, next) => {
-    const { resource_id, user_id, category, title, phone_number, street, city, state, zip_code, county, url, facebook, twitter, instagram } = req.body;
-    const resourcesToUpdate = { resource_id, user_id, category, title, phone_number, street, city, state, zip_code, county, url, facebook, twitter, instagram};
+    const {  
+      resource_id,
+      category, 
+      title, 
+      phone_number, 
+      street_address, 
+      city, 
+      state, 
+      zip_code, 
+      county, 
+      url, 
+      facebook, 
+      twitter, 
+      instagram,
+      date_created 
+    } = req.body;
+    
+    const resourcesToUpdate = {
+      resource_id,
+      category, 
+      title, 
+      phone_number, 
+      street_address, 
+      city, 
+      state, 
+      zip_code, 
+      county, 
+      url, 
+      facebook, 
+      twitter, 
+      instagram,
+      date_created };
 
     for (const [key, value] of Object.entries(resourcesToUpdate))
       if (value === null)
