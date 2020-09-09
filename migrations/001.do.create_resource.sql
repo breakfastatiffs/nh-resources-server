@@ -1,3 +1,4 @@
+DROP TYPE IF EXISTS category;
 CREATE TYPE category AS ENUM (
   'Substance Use',
   'Disability Services',
@@ -15,11 +16,11 @@ CREATE TABLE resources (
     category TEXT NOT NULL,
     title TEXT NOT NULL,
     phone_number CHAR(10) NOT NULL,
-    street_address TEXT,
+    street TEXT,
     city TEXT,
-    state TEXT NOT NULL,
+    state TEXT,
     zip_code CHAR(5),
-    county TEXT NOT NULL,
+    county TEXT,
     url TEXT,
     facebook TEXT,
     twitter TEXT,

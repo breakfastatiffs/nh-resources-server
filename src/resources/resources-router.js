@@ -11,7 +11,7 @@ const serializeResources = resources => ({
   category: resources.category,
   title: xss(resources.title),
   phone_number: xss(resources.phone_number),
-  street: xss(resources.street_address),
+  street: xss(resources.street),
   city: xss(resources.city),
   state: xss(resources.state),
   zipcode: xss(resources.zip_code),
@@ -36,38 +36,36 @@ resourcesRouter
   })
   .post(jsonParser, (req, res, next) => {
     const knexInstance = req.app.get('db');
-    //   Do I need to include everything in this, or JUST required inputs? t h i n k
-    // include all, but create validator to include empty social media ('non-required fields')
-    const {  
+    const {
       resource_id,
-      category, 
-      title, 
-      phone_number, 
-      street_address, 
-      city, 
-      state, 
-      zip_code, 
-      county, 
-      url, 
-      facebook, 
-      twitter, 
+      category,
+      title,
+      phone_number,
+      street,
+      city,
+      state,
+      zip_code,
+      county,
+      url,
+      facebook,
+      twitter,
       instagram,
-      date_created 
+      date_created
     } = req.body;
 
-    const newResource = { 
-      resource_id, 
-      category, 
-      title, 
+    const newResource = {
+      resource_id,
+      category,
+      title,
       phone_number,
-      street_address, 
-      city, 
-      state, 
+      street,
+      city,
+      state,
       zip_code,
-      county, 
-      url, 
-      facebook, 
-      twitter, 
+      county,
+      url,
+      facebook,
+      twitter,
       instagram,
       date_created
     };
@@ -84,7 +82,7 @@ resourcesRouter
     newResource.date_created = date_created;
 
     ResourcesService.createResource(
-      req.app.get('db'),
+      knexInstance,
       newResource
     )
       .then(resources => {
@@ -126,41 +124,44 @@ resourcesRouter
         res.status(204).end();
       })
       .catch(next);
-  })
-  // create validator to include resources without user_id
+  });
+// create validator to include resources without user_id
+resourcesRouter
+  .route('/edit/:resource_id')
   .patch(jsonParser, (req, res, next) => {
-    const {  
+    const {
       resource_id,
-      category, 
-      title, 
-      phone_number, 
-      street_address, 
-      city, 
-      state, 
-      zip_code, 
-      county, 
-      url, 
-      facebook, 
-      twitter, 
+      category,
+      title,
+      phone_number,
+      street,
+      city,
+      state,
+      zip_code,
+      county,
+      url,
+      facebook,
+      twitter,
       instagram,
-      date_created 
+      date_created
     } = req.body;
-    
+
     const resourcesToUpdate = {
-      resource_id,
-      category, 
-      title, 
-      phone_number, 
-      street_address, 
-      city, 
-      state, 
-      zip_code, 
-      county, 
-      url, 
-      facebook, 
-      twitter, 
+      id: resource_id,
+      category,
+      title,
+      phone_number,
+      street,
+      city,
+      state,
+      zip_code,
+      county,
+      url,
+      facebook,
+      twitter,
       instagram,
-      date_created };
+      date_created
+    };
 
     for (const [key, value] of Object.entries(resourcesToUpdate))
       if (value === null)

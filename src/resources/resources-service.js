@@ -1,4 +1,3 @@
-// const resourcesRouter = require("./resources-router");
 
 const ResourcesService = {
   getAllResources(db) {
@@ -11,7 +10,7 @@ const ResourcesService = {
         title: resources.title,
         category: resources.category,
         phone_number: resources.phone_number,
-        street_address: resources.street,
+        street: resources.street,
         city: resources.city,
         county: resources.county,
         state: resources.state,
