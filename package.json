@@ -13,6 +13,9 @@
     "predeploy": "npm audit",
     "deploy": "git push heroku master"
   },
+  "engines": {
+    "node": "12.18.1"
+  },
   "dependencies": {
     "bcrypt": "^5.0.0",
     "bcryptjs": "^2.4.3",
