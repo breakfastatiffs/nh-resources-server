@@ -16,7 +16,7 @@ app.use(morgan(morganSetting));
 app.use(helmet());
 app.use(cors());
 
-app.use('/resources', resourcesRouter);
+app.use('/api/resources', resourcesRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/auth', authRouter);
 
