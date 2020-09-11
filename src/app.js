@@ -15,6 +15,7 @@ const morganSetting = process.env.NODE_ENV === 'production' ? 'tiny' : 'common';
 app.use(morgan(morganSetting));
 app.use(helmet());
 app.use(cors());
+app.options('*', cors());
 
 app.use('/api/resources', resourcesRouter);
 app.use('/api/users', usersRouter);
