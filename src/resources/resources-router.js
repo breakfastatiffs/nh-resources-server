@@ -14,7 +14,7 @@ const serializeResources = resources => ({
   street: xss(resources.street),
   city: xss(resources.city),
   state: xss(resources.state),
-  zipcode: xss(resources.zip_code),
+  zip_code: xss(resources.zip_code),
   county: xss(resources.county),
   url: xss(resources.url),
   facebook: xss(resources.facebook),
@@ -54,7 +54,7 @@ resourcesRouter
     } = req.body;
 
     const newResource = {
-      resource_id,
+      id: resource_id,
       category,
       title,
       phone_number,
