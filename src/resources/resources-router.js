@@ -35,7 +35,7 @@ resourcesRouter
       .catch(next);
   });
 resourcesRouter
-  .route('/add/:resource_id')
+  .route('/add-resource')
   .post(jsonParser, (req, res, next) => {
     const knexInstance = req.app.get('db');
     const {
