@@ -33,7 +33,9 @@ resourcesRouter
         res.json(resources.map(serializeResources));
       })
       .catch(next);
-  })
+  });
+resourcesRouter
+  .route('/add/:resource_id')
   .post(jsonParser, (req, res, next) => {
     const knexInstance = req.app.get('db');
     const {
