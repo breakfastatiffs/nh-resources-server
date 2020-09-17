@@ -129,7 +129,7 @@ resourcesRouter
   });
 // create validator to include resources without user_id
 resourcesRouter
-  .route('/edit/:resource_id')
+  .route('/resources/edit/:resource_id')
   .patch(jsonParser, (req, res, next) => {
     const {
       resource_id,
