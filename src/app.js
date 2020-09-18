@@ -18,6 +18,8 @@ app.use(cors());
 app.options('*', cors());
 
 app.use('/api/resources', resourcesRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/auth', authRouter);
 
 app.use((error, req, res, next) => {
   let response;
