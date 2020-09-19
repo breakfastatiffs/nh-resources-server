@@ -1,26 +1,26 @@
-# Express Boilerplate!
+## Altergencies - For Alternative Emergencies
 
-This is a boilerplate project used for starting new projects!
+[Link to Altergencies](https://nhresource-client.vercel.app/ "Altergencies")
 
-## Set up
+## About Altergencies
+Altergencies is a compilation of emergency and non-emergency contacts for NH. By clicking a resource (business name), a user will be directed to the business's resource page which houses click-through links to call the business, access the bussiness's website, and even their social-media pages (if applicable). Users can view the list of resources, view by ID and are able to add resources, edit existing resources, and delete resources.
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
+## Screenshots
+![Home Page](https://flic.kr/p/2jJggor "Home Page")
+![View Resource By ID Page](https://flic.kr/p/2jJh7ka "By ID")
+![Add Resource 1/2](https://flic.kr/p/2jJcGeD "Add Resource 1")
+![Add Resource 2/2](https://flic.kr/p/2jJh7kq "Add Resource 2")
+![Edit Resource 1/2](https://flic.kr/p/2jJh7jU "Edit Resource 1")
+![Edit Resource 2/2](https://flic.kr/p/2jJcGdM "Edit Resource 2")
+![About](https://flic.kr/p/2jJggpd "About")
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+## API Documentation
+Show Resources List : GET /api/resources/
+Create Resource : POST /api/resources/add-resource/
+Show Resource By ID : GET /api/resources/:resource_id/
+Update A Resource : PATCH /api/resources/edit/:resource_id/
+Delete A Resource : DELETE /api/resources/:resource_id/
 
-## Scripts
-
-Start the application `npm start`
-
-Start nodemon for the application `npm run dev`
-
-Run the tests `npm test`
-
-## Deploying
-
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+## Technologies Used
+FrontEnd: JavaScript, React, CSS 3, HTML 5, and Jest.
+BackEnd: Node.js, Express.js, PostgreSQL, and Mocha & Chai.

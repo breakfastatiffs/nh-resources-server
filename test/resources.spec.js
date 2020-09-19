@@ -116,7 +116,7 @@ describe('Resources service object', () => {
 
   before('cleanup', () => db('resources').truncate());
   before(() => {
-    global.Date.now = () => new Date('2019-04-07T10:20:30Z').getTime();
+    global.Date.now = () => new Date('2019-04-07T10::30Z').getTime();
   });
 
   afterEach('clean db', () => db('resources').truncate());
@@ -237,33 +237,44 @@ describe('Resources service object', () => {
     });
   });
 
-  describe('updateById()', () => {
-    it('should return 0 rows affected', () => {
-      return ResourcesService
-        .updateById(db, 999)
-        .then(rowsAffected => expect(rowsAffected).to.eq(0));
-    });
+  describe('updateById()' , () => {
+    it('updates record in db', () => {
+      const updatededResource = {
+        id: 1,
+        category: 'Veterans',
+        date_created: '2019-04-07T10:20:30Z',
+        title: 'Veterans Count NH',
+        phone_number: '6036213570',
+        url: 'https://vetscount.org/',
+        street: '555 Auburn St',
+        city: 'Manchester',
+        county: 'Hillsborough',
+        zip_code: '03103',
+        state: 'NH',
+        facebook: 'https://www.facebook.com/VeteransCount',
+        twitter: 'https://twitter.com/VeteransCount',
+        instagram: 'https://www.instagram.com/veteranscount/',
+      };
 
-    context('with data present', () => {
-      before('insert resources', () => 
-        db('resources')
-          .insert(testResources)
-      );
-
-      it('should return update resource title', () => {
-        const updateById = 1;
-
-        return ResourcesService
-          .updateById(db, updateById)
-          .then(rowsAffected => {
-            expect(rowsAffected).to.eq(1);
-            return db('resources').select('*');
-          })
-          .then(actual => {
-            const expected = testResources.filter(a => a.id !== updateById);
-            expect(actual).to.eql(expected);
+      return ResourcesService.updateById(db, updatededResource)
+        .then(actual => {
+          expect(actual).to.eql({
+            id: 1,
+            category: 'Veterans',
+            date_created: '2019-04-07T10:20:30Z',
+            title: 'Veterans Count NH',
+            phone_number: '6036213570',
+            url: 'https://vetscount.org/',
+            street: '555 Auburn St',
+            city: 'Manchester',
+            county: 'Hillsborough',
+            zip_code: '03103',
+            state: 'NH',
+            facebook: 'https://www.facebook.com/VeteransCount',
+            twitter: 'https://twitter.com/VeteransCount',
+            instagram: 'https://www.instagram.com/veteranscount/',
           });
-      });
+        });
     });
   });
 });
