@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const knex = require('knex')
+const knex = require('knex');
 const ResourcesService = require('../src/resources/resources-service');
 
 describe('Resources service object', () => {
@@ -8,6 +8,7 @@ describe('Resources service object', () => {
     {
       id: 1,
       category: 'Veterans',
+      date_created: '2019-04-07T10:20:30Z',
       title: 'Veterans Count',
       phone_number: '6036213570',
       url: 'https://vetscount.org/',
@@ -23,6 +24,7 @@ describe('Resources service object', () => {
     {
       id: 2,
       category: 'Residence Challenged',
+      date_created: '2019-04-07T10:20:30Z',
       title: 'Families in Transition',
       phone_number: '6036419441',
       url: 'https://www.fitnh.org/',
@@ -38,6 +40,7 @@ describe('Resources service object', () => {
     {
       id: 3,
       category: 'Mental Health',
+      date_created: '2019-04-07T10:20:30Z',
       title: 'The Mental Health Center of Greater Manchester',
       phone_number: '6036884111',
       url: 'https://www.mhcgm.org/',
@@ -112,6 +115,9 @@ describe('Resources service object', () => {
   ));
 
   before('cleanup', () => db('resources').truncate());
+  before(() => {
+    global.Date.now = () => new Date('2019-04-07T10:20:30Z').getTime();
+  });
 
   afterEach('clean db', () => db('resources').truncate());
 
@@ -124,13 +130,13 @@ describe('Resources service object', () => {
         .then(resources => expect(resources).to.eql([]));
     });
 
-    context('with data present', () => {
-      beforeEach('insert test resources', () =>
+    context('with data present inside db', () => {
+      beforeEach('insert resources', () =>
         db('resources')
           .insert(testResources)
       );
 
-      it('returns all test resources', () => {
+      it('returns all resources', () => {
         return ResourcesService
           .getAllResources(db)
           .then(resources => expect(resources).to.eql(testResources));
@@ -138,11 +144,12 @@ describe('Resources service object', () => {
     });
   });
 
-  describe('insertResource()' , () => {
+  describe('createResource()' , () => {
     it('inserts record in db and returns resource with new id', () => {
       const newResource = {
         id: 1,
         category: 'Veterans',
+        date_created: '2019-04-07T10:20:30Z',
         title: 'Veterans Count',
         phone_number: '6036213570',
         url: 'https://vetscount.org/',
@@ -156,11 +163,12 @@ describe('Resources service object', () => {
         instagram: 'https://www.instagram.com/veteranscount/',
       };
 
-      return ResourcesService.insertResource(db, newResource)
+      return ResourcesService.createResource(db, newResource)
         .then(actual => {
           expect(actual).to.eql({
             id: 1,
             category: 'Veterans',
+            date_created: '2019-04-07T10:20:30Z',
             title: 'Veterans Count',
             phone_number: '6036213570',
             url: 'https://vetscount.org/',
@@ -174,33 +182,6 @@ describe('Resources service object', () => {
             instagram: 'https://www.instagram.com/veteranscount/',
           });
         });
-    });
-
-
-    it('throws not-null constraint error if pet not provided', () => {      
-      const newResource = {
-        id: 1,
-        category: 'Veterans',
-        title: 'Veterans Count',
-        phone_number: '6036213570',
-        url: 'https://vetscount.org/',
-        street: '555 Auburn St',
-        city: 'Manchester',
-        county: 'Hillsborough',
-        zip_code: '03103',
-        state: 'NH',
-        facebook: 'https://www.facebook.com/VeteransCount',
-        twitter: 'https://twitter.com/VeteransCount',
-        instagram: 'https://www.instagram.com/veteranscount/',
-      };
-
-
-      return ResourcesService 
-        .insertResource(db, newResource)
-        .then(
-          () => expect.fail('db should throw error'),
-          err => expect(err.message).to.include('not-null')
-        );
     });
   });
 
@@ -226,10 +207,10 @@ describe('Resources service object', () => {
     });
   });
 
-  describe('deleteResource()', () => {
+  describe('deleteById()', () => {
     it('should return 0 rows affected', () => {
       return ResourcesService
-        .deleteResource(db, 999)
+        .deleteById(db, 999)
         .then(rowsAffected => expect(rowsAffected).to.eq(0));
     });
 
@@ -240,16 +221,46 @@ describe('Resources service object', () => {
       );
 
       it('should return 1 row affected and record is removed from db', () => {
-        const deleteResourceId = 1;
+        const deleteById = 1;
 
         return ResourcesService
-          .deleteResource(db, deleteResourceId)
+          .deleteById(db, deleteById)
           .then(rowsAffected => {
             expect(rowsAffected).to.eq(1);
             return db('resources').select('*');
           })
           .then(actual => {
-            const expected = testResources.filter(a => a.id !== deleteResourceId);
+            const expected = testResources.filter(a => a.id !== deleteById);
+            expect(actual).to.eql(expected);
+          });
+      });
+    });
+  });
+
+  describe('updateById()', () => {
+    it('should return 0 rows affected', () => {
+      return ResourcesService
+        .updateById(db, 999)
+        .then(rowsAffected => expect(rowsAffected).to.eq(0));
+    });
+
+    context('with data present', () => {
+      before('insert resources', () => 
+        db('resources')
+          .insert(testResources)
+      );
+
+      it('should return update resource title', () => {
+        const updateById = 1;
+
+        return ResourcesService
+          .updateById(db, updateById)
+          .then(rowsAffected => {
+            expect(rowsAffected).to.eq(1);
+            return db('resources').select('*');
+          })
+          .then(actual => {
+            const expected = testResources.filter(a => a.id !== updateById);
             expect(actual).to.eql(expected);
           });
       });
