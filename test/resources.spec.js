@@ -1,6 +1,8 @@
 const { expect } = require('chai');
 const knex = require('knex');
+const supertest = require('supertest');
 const ResourcesService = require('../src/resources/resources-service');
+const app = require('../src/app');
 
 describe('Resources service object', () => {
 
@@ -62,6 +64,7 @@ describe('Resources service object', () => {
       client: 'pg',
       connection: process.env.TEST_DATABASE_URL || 'postgresql://postgres@localhost/nh-sources-test',
     });
+    app.set('db', db);
   });
 
   before('create resources table', () => db.raw(
@@ -240,10 +243,11 @@ describe('Resources service object', () => {
   });
 
   describe.only('PATCH: updateById()', () => {
-    it('should return 400', () => {
-      return ResourcesService
-        .updateById(db, 999, updatededResource)
-        .then(resource => expect(resource).to.be.undefined);
+    it('should return 400 bc of faulty ID', () => {
+      const id = 999;
+      return supertest(app)
+        .patch(`/api/resources/${id}`)
+        .expect(404);
     });
 
     context('with data present', () => {
@@ -253,6 +257,7 @@ describe('Resources service object', () => {
       );
 
       it('updates record in db', () => {
+        const idToUpdate = 1;
         const updatededResource = {
           id: 1,
           category: 'Veterans UPDATED',

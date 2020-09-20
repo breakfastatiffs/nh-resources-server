@@ -165,7 +165,7 @@ resourcesRouter
 
     for (const [key, value] of Object.entries(resourcesToUpdate))
       if (value === null)
-        return res.status(400).json({
+        return res.status(404).json({
           error: { message: `Missing '${key}' in request body` }
         });
     ResourcesService.updateById(
