@@ -259,7 +259,6 @@ describe('Resources service object', () => {
       it('updates record in db', () => {
         const idToUpdate = 1;
         const updatededResource = {
-          id: 1,
           category: 'Veterans UPDATED',
           date_created: new Date('2019-04-07T10:20:30Z'),
           title: 'Veterans Count NH',
@@ -274,11 +273,20 @@ describe('Resources service object', () => {
           twitter: 'https://twitter.com/VeteransCount',
           instagram: 'https://www.instagram.com/veteranscount/',
         };
-
-        return ResourcesService.updateById(db, updatededResource)
-          .then(actual => {
-            expect(actual).to.eql(updatededResource);
-          });
+        const expectedResource = {
+          ...testResources[1],
+          ...updatededResource
+        }
+        
+        return supertest(app)
+          .patch(`/api/resources/${idToUpdate}`)
+          .send(updatededResource)
+          .expect(204)
+            .then(res => 
+              supertest(app)
+              .get(`/api/resources/${idToUpdate}`)
+              .expect(expectedResource)
+              )
       });
     });
   });
