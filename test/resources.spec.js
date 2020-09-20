@@ -3,12 +3,12 @@ const knex = require('knex');
 const ResourcesService = require('../src/resources/resources-service');
 
 describe('Resources service object', () => {
- 
+
   const testResources = [
     {
       id: 1,
       category: 'Veterans',
-      date_created: '2019-04-07T10:20:30Z',
+      date_created: new Date('2019-04-07T10:20:30Z'),
       title: 'Veterans Count',
       phone_number: '6036213570',
       url: 'https://vetscount.org/',
@@ -24,7 +24,7 @@ describe('Resources service object', () => {
     {
       id: 2,
       category: 'Residence Challenged',
-      date_created: '2019-04-07T10:20:30Z',
+      date_created: new Date('2019-04-07T10:20:30Z'),
       title: 'Families in Transition',
       phone_number: '6036419441',
       url: 'https://www.fitnh.org/',
@@ -40,7 +40,7 @@ describe('Resources service object', () => {
     {
       id: 3,
       category: 'Mental Health',
-      date_created: '2019-04-07T10:20:30Z',
+      date_created: new Date('2019-04-07T10:20:30Z'),
       title: 'The Mental Health Center of Greater Manchester',
       phone_number: '6036884111',
       url: 'https://www.mhcgm.org/',
@@ -115,15 +115,12 @@ describe('Resources service object', () => {
   ));
 
   before('cleanup', () => db('resources').truncate());
-  before(() => {
-    global.Date.now = () => new Date('2019-04-07T10::30Z').getTime();
-  });
 
   afterEach('clean db', () => db('resources').truncate());
 
   after('destroy db connection', () => db.destroy());
 
-  describe('getAllResources()', () => {
+  describe('GET: getAllResources()', () => {
     it('returns empty array', () => {
       return ResourcesService
         .getAllResources(db)
@@ -144,12 +141,31 @@ describe('Resources service object', () => {
     });
   });
 
-  describe('createResource()' , () => {
+  describe('POST: createResource()', () => {
+    it('Missing req body', () => {
+      const emptyPost = {
+        category: '',
+        title: '',
+        phone_number: '',
+        url: '',
+        street: '',
+        city: '',
+        county: '',
+        zip_code: '',
+        state: '',
+        facebook: '',
+        twitter: '',
+        instagram: '',
+      };
+      return ResourcesService
+        .createResource(db, emptyPost)
+        .then(expect(400));
+    });
+
     it('inserts record in db and returns resource with new id', () => {
       const newResource = {
         id: 1,
-        category: 'Veterans',
-        date_created: '2019-04-07T10:20:30Z',
+        category: 'New Resource',
         title: 'Veterans Count',
         phone_number: '6036213570',
         url: 'https://vetscount.org/',
@@ -165,27 +181,13 @@ describe('Resources service object', () => {
 
       return ResourcesService.createResource(db, newResource)
         .then(actual => {
-          expect(actual).to.eql({
-            id: 1,
-            category: 'Veterans',
-            date_created: '2019-04-07T10:20:30Z',
-            title: 'Veterans Count',
-            phone_number: '6036213570',
-            url: 'https://vetscount.org/',
-            street: '555 Auburn St',
-            city: 'Manchester',
-            county: 'Hillsborough',
-            zip_code: '03103',
-            state: 'NH',
-            facebook: 'https://www.facebook.com/VeteransCount',
-            twitter: 'https://twitter.com/VeteransCount',
-            instagram: 'https://www.instagram.com/veteranscount/',
-          });
+          delete actual.date_created;
+          expect(actual).to.eql(newResource);
         });
     });
   });
 
-  describe('getById()', () => {
+  describe('GET: getById()', () => {
     it('should return undefined', () => {
       return ResourcesService
         .getById(db, 999)
@@ -193,7 +195,7 @@ describe('Resources service object', () => {
     });
 
     context('with data present', () => {
-      before('insert resources', () => 
+      before('insert resources', () =>
         db('resources')
           .insert(testResources)
       );
@@ -207,7 +209,7 @@ describe('Resources service object', () => {
     });
   });
 
-  describe('deleteById()', () => {
+  describe('DELETE: deleteById()', () => {
     it('should return 0 rows affected', () => {
       return ResourcesService
         .deleteById(db, 999)
@@ -215,7 +217,7 @@ describe('Resources service object', () => {
     });
 
     context('with data present', () => {
-      before('insert resources', () => 
+      before('insert resources', () =>
         db('resources')
           .insert(testResources)
       );
@@ -237,44 +239,43 @@ describe('Resources service object', () => {
     });
   });
 
-  describe('updateById()' , () => {
-    it('updates record in db', () => {
-      const updatededResource = {
-        id: 1,
-        category: 'Veterans',
-        date_created: '2019-04-07T10:20:30Z',
-        title: 'Veterans Count NH',
-        phone_number: '6036213570',
-        url: 'https://vetscount.org/',
-        street: '555 Auburn St',
-        city: 'Manchester',
-        county: 'Hillsborough',
-        zip_code: '03103',
-        state: 'NH',
-        facebook: 'https://www.facebook.com/VeteransCount',
-        twitter: 'https://twitter.com/VeteransCount',
-        instagram: 'https://www.instagram.com/veteranscount/',
-      };
+  describe.only('PATCH: updateById()', () => {
+    it('should return 400', () => {
+      return ResourcesService
+        .updateById(db, 999, updatededResource)
+        .then(resource => expect(resource).to.be.undefined);
+    });
 
-      return ResourcesService.updateById(db, updatededResource)
-        .then(actual => {
-          expect(actual).to.eql({
-            id: 1,
-            category: 'Veterans',
-            date_created: '2019-04-07T10:20:30Z',
-            title: 'Veterans Count NH',
-            phone_number: '6036213570',
-            url: 'https://vetscount.org/',
-            street: '555 Auburn St',
-            city: 'Manchester',
-            county: 'Hillsborough',
-            zip_code: '03103',
-            state: 'NH',
-            facebook: 'https://www.facebook.com/VeteransCount',
-            twitter: 'https://twitter.com/VeteransCount',
-            instagram: 'https://www.instagram.com/veteranscount/',
+    context('with data present', () => {
+      before('insert resources', () =>
+        db('resources')
+          .insert(testResources)
+      );
+
+      it('updates record in db', () => {
+        const updatededResource = {
+          id: 1,
+          category: 'Veterans UPDATED',
+          date_created: new Date('2019-04-07T10:20:30Z'),
+          title: 'Veterans Count NH',
+          phone_number: '6036213570',
+          url: 'https://vetscount.org/',
+          street: '555 Auburn St',
+          city: 'Manchester',
+          county: 'Hillsborough',
+          zip_code: '03103',
+          state: 'NH',
+          facebook: 'https://www.facebook.com/VeteransCount',
+          twitter: 'https://twitter.com/VeteransCount',
+          instagram: 'https://www.instagram.com/veteranscount/',
+        };
+
+        return ResourcesService.updateById(db, updatededResource)
+          .then(actual => {
+            expect(actual).to.eql(updatededResource);
           });
-        });
+      });
     });
   });
+
 });

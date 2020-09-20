@@ -78,8 +78,6 @@ resourcesRouter
           error: { message: `Missing '${key}' in request body` }
         });
 
-    // create more validators: checking url, case sensitive, proper # length, 1/10 counties,
-
     newResource.resource_id = resource_id;
     newResource.date_created = date_created;
 
@@ -127,7 +125,7 @@ resourcesRouter
       })
       .catch(next);
   });
-// create validator to include resources without user_id
+  
 resourcesRouter
   .route('/edit/:resource_id')
   .patch(jsonParser, (req, res, next) => {
